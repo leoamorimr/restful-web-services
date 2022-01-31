@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 @Component
@@ -28,6 +29,19 @@ public class UserDAOService {
         for (User user : users) {
             if (user.getId() == userId)
                 return user;
+        }
+        return null;
+    }
+
+    public User deleteUserById(@PathVariable int userId) {
+        Iterator<User> iter = users.iterator();
+        while (iter.hasNext()) {
+            User user = (User) iter.next();
+
+            if (user.getId() == userId) {
+                iter.remove();
+                return user;
+            }
         }
         return null;
     }
