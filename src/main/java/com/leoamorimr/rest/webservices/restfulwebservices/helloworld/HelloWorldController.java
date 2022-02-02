@@ -1,17 +1,34 @@
 package com.leoamorimr.rest.webservices.restfulwebservices.helloworld;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.websocket.server.PathParam;
+import java.util.Locale;
 
 @RestController
 public class HelloWorldController {
 
+    @Autowired
+    private MessageSource messageSource;
+
     @GetMapping(path = "/hello-world")
     public String helloWorld() {
         return "Hello world!";
+    }
+
+    @GetMapping(path = "/hello-world-internationilized")
+    public String helloWorldInternationilized(@RequestHeader(value = "Accept-Language", required = false) Locale locale) {
+        return messageSource.getMessage("good.morning.message", null, "Default message", locale);
+    }
+
+    @GetMapping(path = "/hello-world-internationilized2")
+    public String helloWorldInternationilizedd() {
+        return messageSource.getMessage("good.morning.message", null, "Default message", LocaleContextHolder.getLocale());
     }
 
     @GetMapping(path = "/hello-world-bean")
