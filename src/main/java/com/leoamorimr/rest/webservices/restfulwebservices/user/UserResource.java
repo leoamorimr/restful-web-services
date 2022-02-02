@@ -1,5 +1,7 @@
 package com.leoamorimr.rest.webservices.restfulwebservices.user;
 
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -23,11 +25,15 @@ public class UserResource {
     }
 
     @GetMapping("/users/{userId}")
-    private User retrieveUser(@PathVariable int userId) {
+    private EntityModel<User> retrieveUser(@PathVariable int userId) {
         User user = userDAOService.findOne(userId);
         if (user == null)
             throw new UserNotFoundException("id-" + userId);
-        return user;
+
+        EntityModel<User> model = EntityModel.of(user);
+        WebMvcLinkBuilder linkToUsers = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).retrieveAllUsers());
+        model.add(linkToUsers.withRel("all-users"));
+        return model;
     }
 
     @PostMapping("/users")
